@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>jquery插件demo</title>
+  <link rel="stylesheet" href="../css/magnifier.css">
+  <link rel="stylesheet" href="../css/index.css">
+  <link rel="stylesheet" href="../css/carousel.css">
+</head>
+<body>
+  <p>ABCD</p>
+  <p class="afters">ABCD</p>
+  <div class="form-field">
+    <h3>放大镜magnifier插件</h3>
+    <div class="magnifier">
+      <img src="../image/goods_L_1.jpg" />
+      <img src="../image/goods_L_2.jpg" />
+      <img src="../image/goods_L_3.jpg" />
+      <img src="../image/goods_L_4.jpg" />
+      <img src="../image/goods_L_6.jpg" />
+      <img src="../image/goods_L_7.jpg" />
+      <img src="../image/goods_L_8.jpg" />
+    </div>
+  </div>
+  <div class="form-field">
+    <h3>轮播图插件</h3>
+    <div class="carousel">
+      <img src="../image/goods_L_1.jpg" />
+      <img src="../image/goods_L_2.jpg" />
+      <img src="../image/goods_L_3.jpg" />
+      <img src="../image/goods_L_4.jpg" />
+      <img src="../image/goods_L_6.jpg" />
+      <img src="../image/goods_L_7.jpg" />
+      <img src="../image/goods_L_8.jpg" />
+    <div>
+  </div>
+  <script type="text/javascript" src="../js/jquery-3.2.1.min.js"></script>
+  <script type="text/javascript" src="../js/index.js"></script>
+  <script type="text/javascript" src="../js/magnifier.js"></script>
+  <script type="text/javascript" src="../js/carousel.js"></script>
+  <script type="text/javascript">
+    $('.afters').color({ size: '24px', color: 'red' });
+    $('.magnifier').magnifier({});
+    $('.carousel').carousel({
+      bdirect: 'vertical',
+      idirect: 'right'
+    });
+  </script>
+</body>
+</html>

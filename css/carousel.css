@@ -1,0 +1,64 @@
+.carousel {
+  position: relative;
+  overflow: hidden;
+}
+
+.carousel .list {
+  position: absolute;
+  list-style: none;
+}
+
+.carousel .list li {
+  float: left;
+}
+
+.carousel .point {
+  position: absolute;
+  text-align: center;
+}
+
+.carousel .point dd {
+  display: inline-block;
+  height: 10px;
+  width: 10px;
+  border-radius: 50%;
+  background: #bbb;
+  margin-right: 5px;
+  cursor: pointer;
+}
+
+.carousel .point dd.disabled {
+  cursor: not-allowed;
+}
+
+.carousel .point dd.hover {
+  background: red;
+}
+
+.carousel .group .carousel-btn {
+  position: absolute;
+  width: 40px;
+  height: 40px;
+  background: rgba(0,0,0,.2);
+  text-align: center;
+  line-height: 40px;
+  cursor: pointer;
+  display: none;
+}
+
+.carousel .group .carousel-btn.disabled {
+  cursor: not-allowed;
+}
+
+.carousel .group .carousel-btn:hover {
+  background-color: rgba(0,0,0,.4);
+}
+
+.carousel .group .carousel-btn::after {
+  content: '';
+  display: inline-block;
+  width: 12px;
+  height: 12px;
+  border-top: 1px solid #fff;
+  border-right: 1px solid #fff;
+}

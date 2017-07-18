@@ -1,0 +1,113 @@
+* {margin: 0; border: 0; padding: 0;}
+
+body {
+  /*background: #eee;*/
+}
+
+.magnifier {
+  position: relative;
+}
+
+.magnifier .zoom-origin,
+.magnifier .zoom-expand {
+  display: inline-block;
+  position: relative;
+  vertical-align: top
+}
+
+.magnifier .zoom-origin img {
+  width: 100%;
+  height: 100%;
+}
+
+.magnifier .zoom-origin .zoom {
+  display: inline-block;
+  position: absolute;
+  background: rgba(255,255,255, .7);
+  cursor: move;
+}
+
+.magnifier .hide {
+  display: none;
+}
+
+.magnifier .zoom-expand {
+  position: absolute;
+}
+.magnifier .zoom-list {
+  margin-top: 10px;
+  text-align: center;
+}
+
+.magnifier .zoom-list .zoom-btn {
+  display: inline-block;
+  height: 48px;
+  width: 14px;
+  border: 1px solid #bbb;
+  line-height: 46px;
+  vertical-align: middle;
+  cursor: pointer;
+}
+
+.magnifier .zoom-list .zoom-btn:hover::after {
+  border-color: #666;
+}
+
+.magnifier .zoom-list .zoom-btn.disabled {
+  cursor: not-allowed;
+}
+
+.magnifier .zoom-list .zoom-btn.disabled:hover::after {
+  border-color: #bbb;
+}
+
+.magnifier .zoom-list .zoom-btn::after {
+  content: '';
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  border-right: 1px solid #aaa;
+  border-top: 1px solid #aaa;
+}
+
+.magnifier .zoom-list .zoom-btn.pre::after {
+  transform: rotate(-135deg);
+  margin-left: 5px;
+}
+
+.magnifier .zoom-list .zoom-btn.next::after {
+  transform: rotate(45deg);
+  margin-right: 5px;
+}
+
+.magnifier .zoom-list .list {
+  position: relative;
+  display: inline-block;
+  width: 348px;
+  height: 52px;
+  overflow: hidden;
+  vertical-align: middle;
+  text-align: left;
+}
+
+.magnifier .zoom-list .list dl {
+  position: absolute;
+  top: 0;
+  left: 0;
+  min-width: 1000px;
+  transition: all .5s ease-in-out;
+}
+
+.magnifier .zoom-list .list dd {
+  display: inline-block;
+  height: 50px;
+  width: 50px;
+  margin: 0 3px;
+  border: 1px solid #bbb;
+  cursor: pointer;
+}
+
+.magnifier .zoom-list dd img {
+  width: 100%;
+  height: 100%;
+}
