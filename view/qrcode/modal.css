@@ -1,0 +1,166 @@
+.modal {
+  position: fixed;
+  top: 0;
+  right: 0;
+  left: 0;
+  bottom: 0;
+  z-index: 1040;
+  overflow-x: hidden;
+  overflow-y: hidden;
+  background: rgba(0,0,0,.6);
+}
+
+.modal .modal-detail {
+  width: 100%;
+  height: 100%;
+}
+
+.modal .modal-shadow {
+  position: fixed;
+  top: 0;
+  right: 0;
+  left: 0;
+  bottom: 0;
+  z-index: 1140;
+  cursor: pointer;
+}
+
+.modal .modal-group {
+  background: #fff;
+  position: fixed;
+  box-shadow: 0 0 10px rgba(0,0,0,.5);
+  border-radius: 5px;
+  padding: 20px;
+  z-index: 1240;
+  cursor: auto;
+}
+
+.modal .modal-group .modal-title {
+  height: 40px;
+  line-height: 40px;
+  font-size: 17px;
+}
+
+.modal .modal-group .modal-content {
+  text-align: center;
+}
+
+.modal .modal-group .modal-btn-group {
+  text-align: right;
+}
+
+.modal .modal-group .modal-btn-group .modal-btn {
+  display: inline-block;
+  height: 24px;
+  margin-left: 14px;
+  border: 1px solid #fff;
+  border-radius: 5px;
+  font-size: 13px;
+  text-align: center;
+  line-height: 24px;
+  cursor: pointer;
+  color: #fff;
+}
+.modal .modal-group .modal-btn-group .modal-btn.modal-btn-comfirm {
+  width: 52px;
+  background-image: -webkit-linear-gradient(top,#337ab7 0,#265a88 100%);
+  background-image: -o-linear-gradient(top,#337ab7 0,#265a88 100%);
+  background-image: -webkit-gradient(linear,left top,left bottom,from(#337ab7),to(#265a88));
+  background-image: linear-gradient(to bottom,#337ab7 0,#265a88 100%);
+  border-color: #245580;
+}
+.modal .modal-group .modal-btn-group .modal-btn.modal-btn-comfirm:hover {
+  background-color: #265a88;
+  border-color: #204d74;
+}
+.modal .modal-group .modal-btn-group .modal-btn.modal-btn-cancel {
+  width: 40px;
+  background-image: -webkit-linear-gradient(top,#fff 0,#e0e0e0 100%);
+  background-image: -o-linear-gradient(top,#fff 0,#e0e0e0 100%);
+  background-image: -webkit-gradient(linear,left top,left bottom,from(#fff),to(#e0e0e0));
+  background-image: linear-gradient(to bottom,#fff 0,#e0e0e0 100%);
+  border-color: #ccc;
+  color: #333;
+}
+.modal .modal-group .modal-btn-group .modal-btn.modal-btn-cancel:hover {
+  background-color: #e0e0e0;
+  border-color: #adadad;
+}
+.modal .modal-group .modal-content .modal-img {
+  display: flex;
+}
+
+.modal .modal-group .modal-content .modal-img .modal-img-content {
+  flex: 1;
+  padding: 20px 10px;
+  text-align: left;
+}
+
+.modal .modal-group .modal-content .modal-img .modal-img-content p {
+  font-size: 16px;
+  line-height: 30px;
+}
+
+.modal .modal-group .modal-content .modal-date {
+  margin: 15px 0;
+}
+
+.modal .modal-group .modal-content .modal-date .modal-time {
+  margin: 0 10px;
+}
+
+.modal .modal-group .modal-content .modal-date .modal-date-btn {
+  display: inline-block;
+  height: 24px;
+  width: 50px;
+  text-align: center;
+  line-height: 24px;
+  font-size: 14px;
+  border-radius: 3px;
+  background-image: -webkit-linear-gradient(top,#fff 0,#e0e0e0 100%);
+  background-image: -o-linear-gradient(top,#fff 0,#e0e0e0 100%);
+  background-image: -webkit-gradient(linear,left top,left bottom,from(#fff),to(#e0e0e0));
+  background-image: linear-gradient(to bottom,#fff 0,#e0e0e0 100%);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.15), 0 1px 1px rgba(0,0,0,.075);
+  border: 1px solid #ccc;
+  cursor: pointer;
+}
+
+.modal .modal-group .modal-content .modal-date .modal-date-btn:hover {
+  background: #e0e0e0;
+  border-color: #adadad;
+}
+
+.modal .modal-group .modal-content table th, .modal .modal-group .modal-content tr td {
+  border: 1px solid #ddd;
+  padding: 8px;
+}
+
+.modal .modal-group .modal-content table th {
+  font-size: 14PX;
+  background: #eee;
+}
+
+.modal .modal-group .modal-content table tr {
+  font-size: 13PX;
+  background: #F9F9F9;
+  text-align: left;
+}
+
+.modal .modal-group .modal-content table tr:hover {
+  background: #f5f5f5;
+}
+.modal .modal-group .modal-content table tr:nth-child(2n) {
+  background: #f9f9f9;
+  font-size: 13px;
+}
+.modal .modal-group .modal-content table tr:nth-child(2n):hover {
+  background: #f5f5f5;
+}
+.modal .modal-group .modal-content table tr.no-data {
+  text-align: center;
+  background: #f9f9f9;
+}
+.modal .modal-group .modal-content table tr.no-data:hover {
+  background: #f9f9f9;
+}
