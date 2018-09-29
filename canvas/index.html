@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>canvas</title>
+    <style>
+        #web-canvas {
+            position: absolute;
+            top: 800px;
+            left: 0;
+        }
+    </style>
+</head>
+<body>
+    <canvas id="canvas" width="800" height="800"></canvas>
+    <canvas id="web-canvas" width="600" height="600"></canvas>
+    <script>
+
+        // 绘制画布
+        function draw() {
+            var canvas = document.getElementById('canvas');
+
+            if (canvas.getContext) {
+                var ctx = canvas.getContext("2d");
+                // 阴影和描矩形
+                ctx.fillStyle = "rgba(161,161,161)";
+                ctx.shadowBlur=10;
+                ctx.shadowColor = "blue";
+                ctx.fillRect(10,10,55,50);
+
+                ctx.fillStyle = "rgba(252,100,81)";
+                ctx.fillRect(50,30,20,60);
+
+                // 渐变色
+                var grd = ctx.createLinearGradient(0,170,170,0);
+                grd.addColorStop(0, "blue");
+                grd.addColorStop(1, "red");
+
+                // 设置阴影距离
+                ctx.shadowOffsetX = 30;
+                ctx.shadowOffsetY = 30;
+
+                ctx.fillStyle = grd;
+                ctx.fillRect(100,100,30,30);
+
+                // 放射性渐变色
+                var rrd = ctx.createRadialGradient(150,150,10,160,160,30);
+                rrd.addColorStop(0, "green");
+                rrd.addColorStop(1, "yellow");
+                ctx.fillStyle = rrd;
+                ctx.shadowOffsetX = 0;
+                ctx.shadowOffsetY = 0;
+
+                ctx.fillRect(140,140,50,50);
+
+                // 绘制线条
+                ctx.beginPath();
+                ctx.lineCap = "round";
+                ctx.moveTo(200,200);
+                ctx.lineTo(220,220);
+                ctx.lineWidth = 5;
+                ctx.fillStyle = "rgba(100,100,100)";
+                ctx.stroke();
+
+                // 重置线条起点
+                ctx.beginPath();
+                // 两条线相交角
+                ctx.lineJoin = "round";
+                // 最大斜度
+                ctx.lineJoin = "miter";
+                ctx.miterLimit = 10;
+                ctx.moveTo(225,225);
+                ctx.lineTo(280,280);
+                ctx.lineTo(225,250);
+                ctx.stroke();
+
+                // 创建矩形
+                ctx.beginPath();
+                ctx.lineWidth = 1;
+                ctx.rect(0,0,10,10);
+                ctx.stroke();
+
+                ctx.strokeRect(60,60,20,20);
+                ctx.fillStyle = 'yellow';
+                ctx.fill();
+
+                // 清除指定范围的矩形
+                // ctx.clearRect(0,0,50,50);
+
+                ctx.beginPath();
+                ctx.lineWidth = 5;
+                ctx.moveTo(150, 0);
+                ctx.lineTo(180,0);
+                ctx.lineTo(150,30);
+                // 闭环线条
+                ctx.closePath();
+                ctx.stroke();
+
+                // 裁剪
+                ctx.beginPath();
+                ctx.rect(0,0, 100,100);
+                ctx.stroke();
+                // ctx.clip();
+                ctx.fillStyle = 'gray';
+                ctx.fillRect(-10,-10, 50,50);
+
+                // 创建二次贝塞尔曲线
+                ctx.beginPath();
+                ctx.moveTo(400,0);
+                ctx.quadraticCurveTo(420,20,440,0);
+                ctx.stroke();
+
+                // 创建三次贝塞尔曲线
+                ctx.beginPath();
+                ctx.moveTo(450,0);
+
+                ctx.bezierCurveTo(450,20,500,20,500,0);
+                ctx.stroke();
+
+                // 创建圆形
+                // ctx.beginPath();
+                // ctx.arc(300,60,20,0, Math.PI*2);
+                // ctx.stroke();
+
+                // 旋转角度
+                ctx.rotate(10*Math.PI/180);
+                // 创建曲线
+                ctx.beginPath();
+                // 移动位置
+                ctx.translate(30,30);
+                ctx.moveTo(320, 20);
+                ctx.lineTo(360,20);
+                ctx.arcTo(380,20,380,40,20);
+                ctx.lineTo(380,60);
+                // 放大缩小
+                ctx.scale(2,2);
+
+                ctx.stroke();
+
+                var gradient=ctx.createLinearGradient(0,0,80,0);
+                gradient.addColorStop("0","magenta");
+                gradient.addColorStop("0.5","blue");
+                gradient.addColorStop("1.0","red");
+
+                ctx.beginPath();
+                ctx.font = "20px Arial";
+                ctx.rotate(-10*Math.PI/180);
+                ctx.scale(.5,.5);
+                ctx.fillStyle = "black";
+                ctx.textBaseline="middle";
+                ctx.fillText("你好啊！", 0, 200);
+                ctx.textBaseline = "bottom";
+                ctx.strokeStyle=gradient;
+                ctx.lineWidth = .8;
+                ctx.strokeText("你也好啊！", 80, 200);
+                ctx.textAlign="right";
+                // 用渐变填色
+                ctx.fillStyle=gradient;
+                ctx.textAlign="center";
+                ctx.fillText("textAlign=end", 0, 240);
+
+                // 检查文本宽度
+                var txt = "我们都是好朋友";
+                ctx.strokeText("width:" + ctx.measureText(txt).width, 100,300);
+                ctx.strokeText(txt, 180,350);
+
+                // 向画布中绘制图片
+                var img = new Image();
+		        img.src = "imgs/box.png";
+
+                img.onload=function(){
+            		ctx.drawImage(img,400,400);
+        		};
+
+                // 创建data物体
+                var imgData=ctx.createImageData(200,200);
+                for (var i=0;i<imgData.data.length;i+=12)
+                  {
+                    imgData.data[i+0]=255;
+                    imgData.data[i+1]=0;
+                    imgData.data[i+2]=0;
+                    imgData.data[i+3]=255;
+                    imgData.data[i+4]=0;
+                    imgData.data[i+5]=255;
+                    imgData.data[i+6]=0;
+                    imgData.data[i+7]=255;
+                    imgData.data[i+8]=161;
+                    imgData.data[i+9]=161;
+                    imgData.data[i+10]=16;
+                    imgData.data[i+11]=255;
+                  }
+                  // imgData.data[4]=0;
+                  //   imgData.data[5]=255;
+                  //   imgData.data[6]=0;
+                  //   imgData.data[7]=255;
+                ctx.putImageData(imgData,80,80);
+
+                // 复制画布
+                function copy() {
+                    var data=ctx.getImageData(0,0,200,200);
+                    ctx.putImageData(data,350,350);
+                }
+                copy();
+            } else {
+                alert('暂不支持画布');
+            }
+        }
+        draw();
+    </script>
+    <!-- 小球碰撞 -->
+    <script>
+        var c = document.getElementById('web-canvas');
+        if (c.getContext) {
+            var cxt = c.getContext('2d');
+            var WIDTH = document.documentElement.clientWidth;
+            var HEIGHT = document.documentElement.clientHeight;
+
+            canvas.width = WIDTH;
+            canvas.height = HEIGHT;
+
+            var config = {
+                speedMin: -7,
+                speedMax: 7,
+                ballMin: 10,
+                ballMax: 20,
+                ballCount: 30
+            }
+
+            function randomNum() {
+                return Math.floor(Math.random() * (max - min)) + min;
+            }
+
+            // 定义球的结构
+            function Ball(x, y, velX, velY, color, size) {
+                this.x = x;
+                this.y = y;
+                this.velX = velX;
+                this.velY = velY;
+                this.color = color;
+                this.size = size;
+            }
+
+            // js 属性定义方法
+            Ball.prototype.draw = function() {
+                cxt.beginPath();
+                cxt.fillStyle = this.color;
+                cxt.arc(this.x, this.y, this.size, 0, 2*Math.PI);
+                cxt.fill();
+            }
+
+            Ball.prototype.update = function() {
+                if (((this.x + this.size) >= WIDTH) || ((this.x - this.size) <= 0)) {
+                    this.velX = -this.velX;
+                }
+                if (((this.y + this.size) >= HEIGHT) || (this.y - this.size <= 0)) {
+                    this.velY = -this.velY;
+                }
+
+                this.x += this.velX;
+                this.y += this.velY;
+            }
+
+            // 球的碰撞检查
+            Ball.prototype.collisionDetect = function() {
+                for (var j = 0; j < balls.length; j++) {
+                    var ball = balls[j];
+                    if (this !== ball) {
+                        var dxv = this.x + this.velX - (ball.x + ball.velX);
+                        var dyv = this.y + this.velY - (ball.y + ball.velY);
+                        var distance = Math.sqrt(dxv * dxv + dyv * dyv);
+
+                        if (distance <= this.size + ball.size) {
+                            
+                        }
+                    }
+                }
+            }
+        } else {
+            alert('请使用支持画布的浏览器!');
+        }
+    </script>
+</body>
+</html>
