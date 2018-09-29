@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>调取摄像头</title>
+  <style>
+    * {
+      padding: 0;
+      margin: 0;
+    }
+    body, html {
+      height: 100%;
+      width: 100%;
+      overflow: hidden;
+    }
+    body {
+        margin : 0px;
+        overflow: hidden;
+        font-family: Monospace;
+        -webkit-transform:translate3d(0,0,0);
+    }
+    .mode {
+        position: absolute;
+        top: 10px;
+        width:100%;
+        text-align: center;
+        z-index: 1;
+    }
+    .hide {
+      display: none !important;
+    }
+    .btn-camera {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      display: block;
+      width: 5rem;
+      height: 1.5rem;
+      font-size: 0.5rem;
+      background: blue;
+      text-align: center;
+      color: #fff;
+      line-height: 1.5rem;
+      border-radius: .2rem;
+    }
+    #video {
+      object-fit: fill;
+    }
+    #container {
+      position: absolute;
+      top: 0;
+      left: 0;
+    }
+  </style>
+</head>
+<body>
+    <div class="drap mode">
+		<div id="Stats-output"></div>
+        <div id="container"></div>
+    </div>
+    <script src="/rs/simulation/js/three.min.js"></script>
+    <script src="/rs/simulation/js/stats.min.js"></script>
+    <script src="/rs/simulation/js/OrbitControls.js"></script>
+    <script src="/rs/simulation/js/TransformControls.js"></script>
+    <!-- fbx -->
+    <script src="/rs/simulation/js/loaders/fbx/FBXLoader.js"></script>
+    <script src="/rs/simulation/js/loaders/fbx/NURBSCurve.js"></script>
+    <script src="/rs/simulation/js/loaders/fbx/NURBSUtils.js"></script>
+    <!-- ar.js -->
+    <script src="/rs/simulation/js/ar/ar.js"></script>
+    <script src="/rs/simulation/js/loaders/MTLLoader.js"></script>
+    <script src="/rs/simulation/js/loaders/OBJLoader.js"></script>
+
+  <script>
+
+      var draw = {
+        arToolkitSource: null,
+  		arToolkitContext: null,
+  		markerControls: null,
+  		onRenderFcts: [],
+  		scene: null,
+  		camera: null,
+  		renderer: null,
+  		light: null,
+  		stats: null,
+  		ambilight: null,
+  		sphere: null,
+  		controls: null,
+  		transControl: null,
+        initArToolkitSource: function() {
+			this.arToolkitSource = new THREEx.ArToolkitSource({});
+		},
+		initArToolkitContext: function() {
+			this.arToolkitContext = new THREEx.ArToolkitContext({
+		        cameraParametersUrl:  '/rs/simulation/data/camera_para.dat',
+		        detectionMode: 'mono',
+		    });
+		},
+		initRenderFcts: function() {
+			// update artoolkit on every frame
+		    draw.onRenderFcts.push(function(){
+		        if( draw.arToolkitSource.ready === false ) return;
+
+		        draw.arToolkitContext.update( draw.arToolkitSource.domElement )
+		        // update scene.visible if the marker is seen
+		        draw.scene.visible = draw.camera.visible;
+		    });
+
+			// render the scene
+			draw.onRenderFcts.push(function(){
+				draw.renderer.render( draw.scene, draw.camera );
+			});
+		},
+		// init controls for camera
+		initMarkerControls: function() {
+			this.markerControls = new THREEx.ArMarkerControls(this.arToolkitContext,this.camera, {
+				type : 'pattern',
+				// patternUrl : '/rs/simulation/arcode/marker89.td',
+				patternUrl : '/rs/simulation/arcode/haha.patt',
+				// patternUrl : THREEx.ArToolkitContext.baseURL + '../data/data/patt.kanji',
+				// as we controls the camera, set changeMatrixMode: 'cameraTransformMatrix'
+				changeMatrixMode: 'cameraTransformMatrix'
+			});
+		},
+		onResize: function() {
+			this.arToolkitSource.onResize()
+			this.arToolkitSource.copySizeTo(this.renderer.domElement)
+			if( this.arToolkitContext.arController !== null ){
+				this.arToolkitSource.copySizeTo(this.arToolkitContext.arController.canvas)
+			}
+		},
+        initScene: function() {
+          this.scene = new THREE.Scene();
+        },
+        initCamera: function() {
+          var aspect = window.innerWidth / window.innerHeight;
+          this.camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, .1, 1000);
+          // this.camera.position.z = 250;
+          this.camera.position.set( 0, 0, 10 );
+        },
+        initRenderer: function() {
+            this.renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true }); // 透明背景
+          // this.renderer.setSize(window.innerWidth, window.innerHeight);
+             <!-- sea3D -->
+            this.renderer.setPixelRatio( window.devicePixelRatio );
+            this.renderer.setSize( window.innerWidth, window.innerHeight );
+            this.renderer.setSize( window.innerWidth, window.innerHeight );
+            this.renderer.domElement.style.position = 'absolute';
+            this.renderer.domElement.style.top = '0px';
+            this.renderer.domElement.style.left = '0px';
+            // this.renderer.shadowMap.enabled = true;
+            // this.renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+            document.body.appendChild(this.renderer.domElement);
+        },
+        initObject: function() {
+            this.sphere = new THREE.Mesh(
+                new THREE.SphereGeometry(0.5, 8, 8),
+                new THREE.MeshNormalMaterial()
+            );
+            this.sphere.material.shading = THREE.FlatShading;
+            this.sphere.position.z = 0.5;
+            this.scene.add(this.sphere);
+        },
+        initFbxNus: function() {
+            var loader = new THREE.FBXLoader();
+            loader.load( '/rs/simulation/models/fbx/jinbi.fbx', function( object ) {
+                object.scale.set(0.005,0.005,0.005);
+                draw.scene.add( object );
+            } );
+        },
+        initLight: function() {
+            var ambientLight = new THREE.AmbientLight( 0xcccccc, 0.4 );
+            this.scene.add( ambientLight );
+
+            var pointLight = new THREE.PointLight( 0xffffff, 0.8 );
+            this.camera.add( pointLight );
+            this.scene.add( this.camera );
+        },
+        // 重置three.js手势动作
+        initControl: function () {
+          this.controls = new THREE.OrbitControls(this.camera, this.renderer.domElement);
+          this.controls.dampingFactor = 0.25;
+          this.transControl = new THREE.TransformControls(this.camera, this.renderer.domElement);
+          this.scene.add(this.transControl)
+       },
+       normalAnimate: function() {
+           this.renderer.render( this.scene, this.camera );
+       },
+       initStats: function() {
+           var stats = new Stats();
+           stats.setMode(0); // 0: fps, 1: ms
+
+           // Align top-left
+           stats.domElement.style.position = 'absolute';
+           stats.domElement.style.left = '0px';
+           stats.domElement.style.top = '0px';
+
+           document.getElementById("Stats-output").appendChild(stats.domElement);
+           return stats;
+       },
+        start: function(){
+          this.initScene();
+          this.initCamera();
+          this.initRenderer();
+          this.initLight();
+          this.initFbxNus();
+          // this.initObject();
+          this.initControl();
+
+          // init arToolkit
+          // this.initArToolkitSource();
+          // this.initArToolkitContext();
+          //
+          // draw.arToolkitSource.init(function onReady(){
+          // 	draw.onResize()
+          // });
+          //
+          // draw.arToolkitContext.init(function onCompleted(){
+          // 	// copy projection matrix to camera
+          // 	draw.camera.projectionMatrix.copy( draw.arToolkitContext.getProjectionMatrix() );
+          // });
+          //
+          // this.initMarkerControls();
+          // this.scene.visible = false;
+          // this.initRenderFcts();
+        }
+      }
+      draw.start();
+
+      function render() {
+  		requestAnimationFrame(render);
+  		draw.normalAnimate();
+  	}
+  	render();
+
+    //   var lastTimeMsec= null;
+    //   requestAnimationFrame(function animate(nowMsec){
+    //       // keep looping
+    //       requestAnimationFrame( animate );
+    //     // stats.update();
+    //       // measure time
+    // 	// draw.sphere.rotation.x += .1;
+    // 	// draw.sphere.rotation.y += .1;
+    // 	draw.animate();
+    //       lastTimeMsec	= lastTimeMsec || nowMsec-1000/60
+    //       var deltaMsec	= Math.min(200, nowMsec - lastTimeMsec)
+    //       lastTimeMsec	= nowMsec
+    //       // call each update function
+    //       draw.onRenderFcts.forEach( function(onRenderFct){
+    //           onRenderFct(deltaMsec/1000, nowMsec/1000)
+    //       })
+    //   })
+  </script>
+</body>
+</html>

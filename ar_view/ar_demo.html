@@ -1,0 +1,254 @@
+<!DOCTYPE>
+<html>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+<style>
+	body {
+		margin : 0px;
+		overflow: hidden;
+		font-family: Monospace;
+		-webkit-transform:translate3d(0,0,0);
+	}
+	.mode {
+		position: absolute;
+		top: 10px;
+		width:100%;
+		text-align: center;
+		z-index: 1;
+	}
+
+</style>
+
+<body>
+	<div class="mode">
+		<div id="Stats-output"></div>
+	</div>
+	<!-- three.js library -->
+	<script src='/rs/simulation/js/three.min.js'></script>
+	<script src="/rs/simulation/js/stats.min.js"></script>
+	<!-- ar.js -->
+	<script src="/rs/simulation/js/ar/ar.min.js"></script>
+	<script src="/rs/simulation/js/OrbitControls.js"></script>
+	<script src="/rs/simulation/js/TransformControls.js"></script>
+	<!-- fbx -->
+	<script src="/rs/simulation/js/loaders/fbx/FBXLoader.js"></script>
+	<!-- <script src="/rs/simulation/js/loaders/MTLLoader.js"></script>
+	<script src="/rs/simulation/js/loaders/OBJLoader.js"></script> -->
+<script>
+
+	var draw = {
+		arToolkitSource: null,
+		arToolkitContext: null,
+		markerControls: null,
+		onRenderFcts: [],
+		scene: null,
+		camera: null,
+		renderer: null,
+		light: null,
+		stats: null,
+		ambilight: null,
+		sphere: null,
+		controls: null,
+		transControl: null,
+		initArToolkitSource: function() {
+			this.arToolkitSource = new THREEx.ArToolkitSource({});
+		},
+		initArToolkitContext: function() {
+			this.arToolkitContext = new THREEx.ArToolkitContext({
+		        cameraParametersUrl:  '/rs/simulation/data/camera_para.dat',
+		        detectionMode: 'mono',
+		    });
+		},
+		initRenderFcts: function() {
+			// update artoolkit on every frame
+		    draw.onRenderFcts.push(function(){
+		        if( draw.arToolkitSource.ready === false ) return false;
+
+		        draw.arToolkitContext.update( draw.arToolkitSource.domElement )
+		        // update scene.visible if the marker is seen
+		        draw.scene.visible = draw.camera.visible;
+		    });
+
+			// render the scene
+			draw.onRenderFcts.push(function(){
+				draw.renderer.render( draw.scene, draw.camera );
+			});
+		},
+		// init controls for camera
+		initMarkerControls: function() {
+			this.markerControls = new THREEx.ArMarkerControls(this.arToolkitContext,this.camera, {
+				type : 'pattern',
+				// patternUrl : '/rs/simulation/arcode/marker89.td',
+				patternUrl : '/rs/simulation/arcode/haha.patt',
+				// patternUrl : THREEx.ArToolkitContext.baseURL + '../data/data/patt.kanji',
+				// as we controls the camera, set changeMatrixMode: 'cameraTransformMatrix'
+				changeMatrixMode: 'cameraTransformMatrix'
+			});
+		},
+		onResize: function() {
+			this.arToolkitSource.onResize()
+			this.arToolkitSource.copySizeTo(this.renderer.domElement)
+			if( this.arToolkitContext.arController !== null ){
+				this.arToolkitSource.copySizeTo(this.arToolkitContext.arController.canvas)
+			}
+		},
+		initScene: function() {
+			this.scene = new THREE.Scene();
+		},
+		initCamera: function() {
+			var aspect = window.innerWidth / window.innerHeight;
+		  	this.camera = new THREE.PerspectiveCamera(75, aspect, .1, 1000);
+		  	this.camera.position.set(0,0,10);
+			this.scene.add(this.camera);
+		},
+		initLight: function() {
+			// this.light = new THREE.DirectionalLight(0xffffff, 1.0);
+			// // set light position
+			// this.light.position.set(0,30,40);
+			// this.light.castShadow = true;
+			// this.scene.add(this.light);
+			var ambientLight = new THREE.AmbientLight( 0xcccccc, 0.4 );
+            this.scene.add( ambientLight );
+
+            var pointLight = new THREE.PointLight( 0xffffff, 0.8 );
+            this.camera.add( pointLight );
+            this.scene.add( this.camera );
+		},
+		// 环境光
+		initAmbilight: function() {
+			this.ambilight = new THREE.AmbientLight(0xffffff, 0.2);
+			this.scene.add(this.ambilight);
+		},
+		initRenderer: function() {
+			this.renderer = new THREE.WebGLRenderer({
+				antialias: true,
+				alpha: true,
+			});
+			this.renderer.setClearColor(new THREE.Color('lightgrey'), 0);
+			this.renderer.setSize( window.innerWidth, window.innerHeight );
+			this.renderer.domElement.style.position = 'absolute';
+			this.renderer.domElement.style.top = '0px';
+			this.renderer.domElement.style.left = '0px';
+			this.renderer.domElement.style.zIndex = 100;
+			document.body.appendChild(this.renderer.domElement);
+		},
+		initObject: function() {
+			this.sphere = new THREE.Mesh(
+				new THREE.BoxGeometry(1, 1, 1),
+				new THREE.MeshNormalMaterial()
+			);
+			this.sphere.material.shading = THREE.FlatShading;
+			this.sphere.position.z = 0.5;
+			this.scene.add(this.sphere);
+		},
+		initStats: function() {
+			var stats = new Stats();
+			stats.setMode(0); // 0: fps, 1: ms
+
+			// Align top-left
+			stats.domElement.style.position = 'absolute';
+			stats.domElement.style.left = '0px';
+			stats.domElement.style.top = '0px';
+
+			document.getElementById("Stats-output").appendChild(stats.domElement);
+			return stats;
+		},
+		// 重置three.js手势动作
+		initControl: function () {
+		  this.controls = new THREE.OrbitControls(this.camera, this.renderer.domElement);
+		  this.controls.dampingFactor = 0.25;
+		  this.transControl = new THREE.TransformControls(this.camera, this.renderer.domElement);
+		  this.scene.add(this.transControl);
+	   },
+	   initAR: function() {
+		   // init arToolkit
+		   this.initArToolkitSource();
+		   this.initArToolkitContext();
+
+		   draw.arToolkitSource.init(function onReady(){
+			   draw.onResize()
+		   });
+
+		   draw.arToolkitContext.init(function onCompleted(){
+			   // copy projection matrix to camera
+			   draw.camera.projectionMatrix.copy( draw.arToolkitContext.getProjectionMatrix() );
+		   });
+
+		   this.initMarkerControls();
+		   this.scene.visible = false;
+		   this.initRenderFcts();
+	   },
+	   arRender: function() {
+		   var lastTimeMsec= null;
+		   requestAnimationFrame(function animate(nowMsec){
+			   // keep looping
+			   requestAnimationFrame( animate );
+				// draw.stats.update();
+				   // measure time
+				// draw.sphere.rotation.x += .1;
+				// draw.sphere.rotation.y += .1;
+				draw.animate();
+			   lastTimeMsec	= lastTimeMsec || nowMsec-1000/60
+			   var deltaMsec	= Math.min(200, nowMsec - lastTimeMsec)
+			   lastTimeMsec	= nowMsec
+			   // call each update function
+			   draw.onRenderFcts.forEach( function(onRenderFct){
+				   onRenderFct(deltaMsec/1000, nowMsec/1000)
+			   })
+		   })
+	   },
+	   initFbxNus: function() {
+		   var loader = new THREE.FBXLoader();
+
+		   loader.load( '/rs/simulation/models/fbx/jinbi.fbx', function( object ) {
+			   object.rotation.x = 180;
+			   object.scale.multiplyScalar(0.001);
+			   // object.scale.set(0.01,0.01,0.01);
+			   draw.scene.add( object );
+
+		   } );
+	   },
+	   animate: function() {
+		 this.renderer.render(this.scene, this.camera);
+	   },
+		start: function() {
+			this.stats = this.initStats();
+
+			// draw model
+			this.initScene();
+			this.initCamera();
+			this.initRenderer();
+			this.initLight();
+			this.initAmbilight();
+			this.initObject();
+			// this.initFbxNus();
+			this.initControl();
+
+			draw.initAR();
+    		draw.arRender();
+
+
+
+		}
+	}
+	draw.start();
+
+	// window.addEventListener('resize', function(){
+	// 	draw.onResize()
+	// })
+	//
+	// window.addEventListener('touchmove', function(e){
+	// 	alert(1);
+	// })
+	//
+	// function render() {
+	// 	requestAnimationFrame(render);
+	// 	draw.animate();
+	// }
+	// render();
+
+
+
+</script>
+</body>
+</html>
