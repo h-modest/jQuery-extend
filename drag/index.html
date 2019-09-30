@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+  <style media="screen">
+    .sortable-box ul {
+      list-style: none;
+    }
+    .sortable-box ul li {
+  		width:400px;
+  		height:300px;
+  		float:left;
+		  margin: 0 20px 20px 0;
+      border-radius: 20px;
+  	}
+    .sortable-module {
+      display: inline-block;
+      margin: 0 20px 20px 0;
+      width: 400px;
+      height: 300px;
+      border-radius: 20px;
+    }
+    .sortable-img-box {
+      position:relative;
+      width: 400px;
+      height: 260px;
+      border-radius: 20px;
+    }
+    .sortable-img-box img {
+      width: 100%;
+      height: 100%;
+      border-radius: 20px;
+    }
+    .form-control {
+      height: 30px;
+      width: 400px;
+      border: none;
+      margin-top: 10px;
+      text-align: center;
+    }
+    .sortable-num {
+      position: absolute;
+      bottom: 0px;
+      right: 0px;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      text-align: center;
+      line-height: 40px;
+      font-size: 24px;
+      background: #cccccc;
+      color: #ffffff;
+    }
+  </style>
+</head>
+<body>
+  <div class="sortable-box">
+    <ul>
+      <li>
+        <div class="sortable-module">
+          <div class="sortable-img-box">
+            <img src="img/face-01.jpg"/>
+            <div class="sortable-num">1</div>
+          </div>
+          <input type="text" name="" value="测试1" class="form-control" />
+        </div>
+      </li>
+      <li>
+        <div class="sortable-module">
+          <div class="sortable-img-box">
+            <img src="img/face-02.jpg"/>
+            <div class="sortable-num">2</div>
+          </div>
+          <input type="text" name="" value="测试2" class="form-control" />
+        </div>
+      </li>
+      <li>
+        <div class="sortable-module">
+          <div class="sortable-img-box">
+            <img src="img/face-03.jpg"/>
+            <div class="sortable-num">3</div>
+          </div>
+          <input type="text" name="" value="测试3" class="form-control" />
+        </div>
+      </li>
+      <li>
+        <div class="sortable-module">
+          <div class="sortable-img-box">
+            <img src="img/face-03.jpg"/>
+            <div class="sortable-num">3</div>
+          </div>
+          <input type="text" name="" value="测试3" class="form-control" />
+        </div>
+      </li>
+      <li>
+        <div class="sortable-module">
+          <div class="sortable-img-box">
+            <img src="img/face-03.jpg"/>
+            <div class="sortable-num">3</div>
+          </div>
+          <input type="text" name="" value="测试3" class="form-control" />
+        </div>
+      </li>
+      <li>
+        <div class="sortable-module">
+          <div class="sortable-img-box">
+            <img src="img/face-03.jpg"/>
+            <div class="sortable-num">3</div>
+          </div>
+          <input type="text" name="" value="测试3" class="form-control" />
+        </div>
+      </li>
+      <li>
+        <div class="sortable-module">
+          <div class="sortable-img-box">
+            <img src="img/face-03.jpg"/>
+            <div class="sortable-num">3</div>
+          </div>
+          <input type="text" name="" value="测试3" class="form-control" />
+        </div>
+      </li>
+      <li>
+        <div class="sortable-module">
+          <div class="sortable-img-box">
+            <img src="img/face-03.jpg"/>
+            <div class="sortable-num">3</div>
+          </div>
+          <input type="text" name="" value="测试3" class="form-control" />
+        </div>
+      </li>
+    </ul>
+  </div>
+
+	<script src="js/jquery-3.2.1.min.js"></script>
+	<script src="js/drag.js"></script>
+  <script type="text/javascript">
+  $('.sortable-box').drag({
+    el: '.sortable-module',
+    onPress: function() {
+      /* 绑定输入监听  */
+      $input = $('.sortable-box').find(".form-control");
+      $input.bind('keypress',function(event){
+         if(event.keyCode == "13") {
+           console.log('你输入的内容为：' + $(this).val());
+           $(this).blur();
+         }
+       });
+    },
+    onUpdate: function() {
+      // console.log('------之前的位置-----:'+ e.oldIndex);
+      console.log('------现在的位置-----:'+ $(this).attr('index'));
+      console.log('------當前的DOM-----:' + $(this));
+      /* 更新排序  */
+      $('.sortable-module').each(function(){
+        var index = parseInt($(this).attr('index'));
+        $(this).find('.sortable-num').html(index + 1);
+      });
+    }
+  });
+  </script>
+</body>
+</html>
